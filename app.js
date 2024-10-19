@@ -1,15 +1,28 @@
 const express = require('express');
-const app = express();
-// const http = require('http');
-// const server = http.createServer(app);
-// const { Server } = require("socket.io");
-// const io = new Server(server);
+
+const port = process.env.PORT || 3000;
+const app = express()
 
 app.get('/', (req, res) => {
   res.send('hello')
 })
 
 app.listen(port);
+
+
+
+
+// const express = require('express');
+// const app = express();
+// const http = require('http');
+// const server = http.createServer(app);
+// const { Server } = require("socket.io");
+// const io = new Server(server);
+
+// app.listen(process.env.PORT || 3000, () => {
+//   console.log('Serwer nasłuchuje na porcie 3000');
+// });
+
 
 // function generateRoomID() {
 //   return Math.random().toString(36).substr(2, 6).toUpperCase();

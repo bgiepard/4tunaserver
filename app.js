@@ -5,9 +5,11 @@ const app = express();
 // const { Server } = require("socket.io");
 // const io = new Server(server);
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Serwer nasłuchuje na porcie 3000');
-});
+app.get('/', (req, res) => {
+  res.send('hello')
+})
+
+app.listen(port);
 
 // function generateRoomID() {
 //   return Math.random().toString(36).substr(2, 6).toUpperCase();

@@ -38,42 +38,45 @@ function generateRoomID() {
 
 const rooms = {};
 
-const getGameInfo = () => {}
-
-const updateGameInfo = () => {}
 
 io.on('connection', (socket) => {
 
-  socket.on('createRoom', (data, callback) => {
+  socket.on('createRoom', (options, callback) => {
     const roomID = generateRoomID();
     socket.join(roomID);
     socket.currentRoom = roomID;
 
     rooms[roomID] = {
       host: socket.id,
-      gameOptions: data,
-      players: []
+      gameOptions: {
+        ...options,
+        players: []
+      }
     };
     callback({ roomID });
   });
 
   socket.on('joinRoom', ({roomID, name}, callback) => {
     const room = rooms[roomID];
+
     if (room) {
-      if (room.players.length < room.gameOptions.maxPlayers) {
+      if (room.gameOptions.players.length < room.gameOptions.maxPlayers) {
         socket.join(roomID);
         socket.currentRoom = roomID;
-        room.players.push({
+        room.gameOptions.players.push({
           id: socket.id,
           name: name,
           amount: 0,
           total: 0
         });
-        io.to(roomID).emit('playerJoined', { players: room.players});
+        io.to(roomID).emit('playerJoined', room);
 
-        if(room.players.length == room.gameOptions.maxPlayers) {
-          room.phrase = getRandomPhrase()
-          io.to(roomID).emit('startGame', { room: {id: roomID, ...room}});
+        if(room.gameOptions.players.length == room.gameOptions.maxPlayers) {
+          //on game start
+          room.gameOptions.phrase = getRandomPhrase();
+          room.gameOptions.mode = 'rotating';
+
+          io.to(roomID).emit('startGame', { id: roomID });
         }
 
         callback({ success: true });
@@ -85,6 +88,28 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('disconnect', () => {
+    if (socket.currentRoom) {
+      const roomID = socket.currentRoom;
+      const room = rooms[roomID];
+
+      if (room) {
+        const playerIndex = room.gameOptions.players.findIndex(player => player.id === socket.id);
+
+        if (playerIndex !== -1) {
+          room.gameOptions.players.splice(playerIndex, 1);
+          io.to(roomID).emit('playerDisconnect', room);
+
+          if (room.gameOptions.players.length === 0) {
+            delete rooms[roomID];
+          }
+        }
+      }
+    }
+  });
+
+
+  // get initial game details
   socket.on('getGameData', (gameID, callback) => {
     const game = rooms[gameID];
 
@@ -95,23 +120,43 @@ io.on('connection', (socket) => {
       }
   });
 
-  socket.on('disconnect', () => {
-    if (socket.currentRoom) {
-      const roomID = socket.currentRoom;
-      const room = rooms[roomID];
 
-      if (room) {
-        const playerIndex = room.players.findIndex(player => player.id === socket.id);
+  socket.on('newGameEvent', ({gameID, name}, callback) => {
+    const room = rooms[gameID];
 
-        if (playerIndex !== -1) {
-          room.players.splice(playerIndex, 1);
-          io.to(roomID).emit('playerDisconnect', { players: room.players });
+    console.log('newGameEvent room', room)
+    console.log('newGameEvent gameId', gameID)
+    console.log('newGameEvent data', name)
 
-          if (room.players.length === 0) {
-            delete rooms[roomID];
-          }
-        }
-      }
+    if (room) {
+      io.to(gameID).emit('gameUpdate', 'pokaze ten komunikat');
+
+      //
+      // if (room.gameOptions.players.length < room.gameOptions.maxPlayers) {
+      //   // socket.join(roomID);
+      //   // socket.currentRoom = roomID;
+      //   // room.gameOptions.players.push({
+      //   //   id: socket.id,
+      //   //   name: name,
+      //   //   amount: 0,
+      //   //   total: 0
+      //   // });
+      //   io.to(roomID).emit('playerJoined', room);
+      //
+      //   if(room.gameOptions.players.length == room.gameOptions.maxPlayers) {
+      //     //on game start
+      //     room.gameOptions.phrase = getRandomPhrase();
+      //     room.gameOptions.mode = 'rotating';
+      //
+      //     io.to(roomID).emit('startGame', { id: roomID });
+      //   }
+      //
+      //   callback({ success: true });
+      // } else {
+      //   callback({ success: false, message: 'Room is full.' });
+      // }
+    } else {
+      callback({ success: false, message: 'Room does not exist.' });
     }
   });
 

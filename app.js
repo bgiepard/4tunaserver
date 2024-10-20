@@ -3,30 +3,14 @@ const express = require('express');
 const app = express();
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const GameController = require('./gameControler');
+
 const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
   }
 });
-
-
-const initialPhrases = [
-  'Z małej chmury duży deszcz',
-  'Co nagle to po diable',
-  'Lepszy wróbel w garści',
-  'Kto pyta nie błądzi',
-  'Czas leczy rany',
-  'Bez pracy nie ma kołaczy',
-  'Prawda w oczy kole',
-  'Kto pod kim dołki kopie',
-];
-
-const getRandomPhrase = () => {
-  const randomIndex = Math.floor(Math.random() * initialPhrases.length);
-  return initialPhrases[randomIndex];
-};
-
 
 server.listen(process.env.PORT || 3000, () => {
   console.log('Server listening on port 3000');

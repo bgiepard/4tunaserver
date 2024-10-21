@@ -58,9 +58,7 @@ io.on('connection', (socket) => {
           const playersForGame = room.gameOptions.players.map(p => ({
             name: p.name,
           }));
-          const game = new GameController(playersForGame, room.gameOptions.maxRounds, roomID);
-
-          room.game = game;
+          room.game = new GameController(playersForGame, room.gameOptions.rounds, roomID);
 
           // Emit 'startGame' with initial game data
           io.to(roomID).emit('startGame', {gameID: roomID});
@@ -118,11 +116,6 @@ io.on('connection', (socket) => {
           gameController.rotateWheel();
           break;
 
-        case 'processValue':
-          const selectedValue = gameController.determineSelectedValue();
-          gameController.processSelectedValue(selectedValue);
-          break
-
         case 'letterClick':
           const { letter } = payload;
           gameController.letterClick(letter);
@@ -160,6 +153,14 @@ io.on('connection', (socket) => {
 
       // Emit the updated game state to all players in the room
       io.to(gameID).emit('gameUpdate', gameController.getGameState());
+
+      if(name == 'rotate') {
+        setTimeout(() => {
+          const selectedValue = gameController.determineSelectedValue();
+          gameController.processSelectedValue(selectedValue);
+          io.to(gameID).emit('gameUpdate', gameController.getGameState());
+        }, 2000);
+      }
 
       // Optionally return the updated game state as a response to the event
       callback({ success: true, gameData: gameController.getGameState() });

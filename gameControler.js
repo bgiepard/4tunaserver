@@ -72,14 +72,10 @@ class GameController {
 
     // Method to simulate rotating the wheel
     rotateWheel() {
-        // Generate a random rotation between 180 and 720 degrees
         const incrementalRotate = Math.floor(Math.random() * (720 - 180 + 1)) + 180;
         this.gameInfo.rotate = incrementalRotate;
-
-        // Accumulate the total rotation without modulo to allow multiple rotations
         this.gameInfo.totalRotate += incrementalRotate;
     }
-
 
     // Method to reset the stake
     resetStake() {

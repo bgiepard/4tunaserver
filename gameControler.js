@@ -72,9 +72,12 @@ class GameController {
 
     // Method to simulate rotating the wheel
     rotateWheel() {
-        const incrementalRotate = Math.floor(Math.random() * (721 - 360)) + 180;
+        // Generate a random rotation between 180 and 720 degrees
+        const incrementalRotate = Math.floor(Math.random() * (720 - 180 + 1)) + 180;
         this.gameInfo.rotate = incrementalRotate;
-        this.gameInfo.totalRotate = (this.gameInfo.totalRotate + incrementalRotate) % 360;
+
+        // Accumulate the total rotation without modulo to allow multiple rotations
+        this.gameInfo.totalRotate += incrementalRotate;
     }
 
 
@@ -98,17 +101,14 @@ class GameController {
     // Method to process the selected value after rotation
     processSelectedValue(selectedValue) {
         this.gameInfo.selectedValue = selectedValue;
-        console.log('in process', selectedValue);
 
         if (selectedValue == '-100%') {
-            console.log('100')
             this.gameInfo.stake = selectedValue;
             this.gameInfo.mode = 'letter';
             this.resetPoints();
         } else if (selectedValue == 'STOP') {
             this.gameInfo.stake = selectedValue;
             this.gameInfo.mode = 'letter';
-            console.log('stop')
             this.nextPlayer();
         } else {
             this.gameInfo.stake = selectedValue;

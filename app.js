@@ -116,9 +116,12 @@ io.on('connection', (socket) => {
       switch (name) {
         case 'rotate':
           gameController.rotateWheel();
+          break;
+
+        case 'processValue':
           const selectedValue = gameController.determineSelectedValue();
           gameController.processSelectedValue(selectedValue);
-          break;
+          break
 
         case 'letterClick':
           const { letter } = payload;

@@ -95,7 +95,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // get initial game details
   socket.on('getGameData', (gameID, callback) => {
     const game = rooms[gameID];
 
@@ -107,6 +106,7 @@ io.on('connection', (socket) => {
       }
   });
 
+
   socket.on('newGameEvent', ({ gameID, name, payload }, callback) => {
     const room = rooms[gameID];
 
@@ -116,7 +116,7 @@ io.on('connection', (socket) => {
       switch (name) {
         case 'rotate':
           gameController.rotateWheel();
-          const selectedValue = gameController.determineSelectedValue(gameController.gameInfo.rotate);
+          const selectedValue = gameController.determineSelectedValue();
           gameController.processSelectedValue(selectedValue);
           break;
 
@@ -125,7 +125,6 @@ io.on('connection', (socket) => {
           gameController.letterClick(letter);
           break;
 
-        // Dodaj nowe przypadki tutaj
         case 'addPoints':
           const { letterCount } = payload;
           gameController.addPoints(letterCount);
@@ -151,7 +150,6 @@ io.on('connection', (socket) => {
           gameController.resetStake();
           break;
 
-        // Dodaj inne akcje gry w razie potrzeby
         default:
           callback({ success: false, message: `Unknown event name: ${name}` });
           return;

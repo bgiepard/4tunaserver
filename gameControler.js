@@ -2,12 +2,10 @@ const { initialPhrases, vowels, values } = require('./utils/constants');
 
 class GameController {
     constructor(players, maxRounds, id) {
-        // Initialize phrases, vowels, and values
         this.initialPhrases = [...initialPhrases];
         this.vowels = [...vowels];
         this.values = [...values];
 
-        // Copy initial phrases to the phrases array
         this.phrases = [...this.initialPhrases];
 
         // Initialize game information with provided players
@@ -20,7 +18,7 @@ class GameController {
                 total: 0
             })),
             round: 1,
-            maxRounds: 3,
+            maxRounds: maxRounds || 3, // Use provided maxRounds or default to 3
             currentPlayer: 0,
             badLetters: [],
             goodLetters: [],
@@ -33,6 +31,7 @@ class GameController {
             goodGuess: true,
             onlyVowels: false,
             afterRotate: false, // Mirrors the React context
+            totalRotate: 0
         };
     }
 
@@ -73,14 +72,11 @@ class GameController {
 
     // Method to simulate rotating the wheel
     rotateWheel() {
-        this.gameInfo.rotate = Math.floor(Math.random() * (721 - 360)) + 180;
-        this.gameInfo.stake = Math.floor(Math.random() * (1000 - 100)) + 100;
+        const incrementalRotate = Math.floor(Math.random() * (721 - 360)) + 180;
+        this.gameInfo.rotate = incrementalRotate;
+        this.gameInfo.totalRotate = (this.gameInfo.totalRotate + incrementalRotate) % 360;
     }
 
-    // Method to set the game mode to guessing
-    letMeGuess() {
-        this.gameInfo.mode = 'guessing';
-    }
 
     // Method to reset the stake
     resetStake() {
@@ -88,22 +84,22 @@ class GameController {
     }
 
     // Method to determine the selected value based on rotation angle
-    determineSelectedValue(rotationAngle) {
-        let adjustedAngle = ((rotationAngle % 360) + 360) % 360;
-        const sliceAngle = 360 / this.values.length;
-        const arrowAngle = 0;
+    determineSelectedValue() {
+        const rotationAngle = this.gameInfo.totalRotate;
+        let adjustedAngle = ((rotationAngle % 360) + 360) % 360; // Normalize to 0-359
+        const sliceAngle = 360 / this.values.length;              // 22.5 degrees per slice for 16 slices
+        const arrowAngle = 0;                                     // Assuming the arrow points to 0 degrees
         let angleAtArrow = (adjustedAngle + arrowAngle) % 360;
         const sliceIndex = Math.floor(angleAtArrow / sliceAngle) % this.values.length;
         return this.values[sliceIndex];
     }
+
 
     // Method to process the selected value after rotation
     processSelectedValue(selectedValue) {
         this.gameInfo.selectedValue = selectedValue;
         if (selectedValue === '-100%') {
             this.resetPoints();
-        } else if (selectedValue === '-50%') {
-            this.resetHalf();
         } else if (selectedValue === 'STOP') {
             this.nextPlayer();
         } else {
@@ -114,20 +110,9 @@ class GameController {
         }
     }
 
-    // Method to handle rotation logic
-    handleRotate(deg = 0, rotationAngle, setRotationAngle, isAnimating, setIsAnimating, setTransitionDuration) {
-        if (isAnimating) return;
-
-        const randomDeg = Math.floor(deg);
-        const newRotationAngle = rotationAngle + randomDeg;
-        const totalDegrees = newRotationAngle - rotationAngle;
-        const rotations = totalDegrees / 360;
-        const newTransitionDuration = rotations * 1000;
-
-        setTransitionDuration(newTransitionDuration);
-        setRotationAngle(newRotationAngle);
-        setIsAnimating(true);
-        this.resetStake();
+    // Method to set the game mode to guessing
+    letMeGuess() {
+        this.gameInfo.mode = 'guessing';
     }
 
     // Method to handle letter clicks

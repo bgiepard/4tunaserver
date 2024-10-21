@@ -99,6 +99,7 @@ class GameController {
 
     // Method to process the selected value after rotation
     processSelectedValue(selectedValue) {
+        this.gameInfo.selectedValue = selectedValue;
         if (selectedValue === '-100%') {
             this.resetPoints();
         } else if (selectedValue === '-50%') {
@@ -109,7 +110,7 @@ class GameController {
             this.gameInfo.stake = selectedValue;
             this.gameInfo.mode = 'letter';
             this.gameInfo.goodGuess = false;
-            this.gameInfo.afterRotate = true; // If needed
+            this.gameInfo.afterRotate = true;
         }
     }
 

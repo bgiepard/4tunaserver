@@ -98,9 +98,17 @@ class GameController {
     // Method to process the selected value after rotation
     processSelectedValue(selectedValue) {
         this.gameInfo.selectedValue = selectedValue;
-        if (selectedValue === '-100%') {
+        console.log('in process', selectedValue);
+
+        if (selectedValue == '-100%') {
+            console.log('100')
+            this.gameInfo.stake = selectedValue;
+            this.gameInfo.mode = 'letter';
             this.resetPoints();
-        } else if (selectedValue === 'STOP') {
+        } else if (selectedValue == 'STOP') {
+            this.gameInfo.stake = selectedValue;
+            this.gameInfo.mode = 'letter';
+            console.log('stop')
             this.nextPlayer();
         } else {
             this.gameInfo.stake = selectedValue;

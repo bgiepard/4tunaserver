@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
           const playersForGame = room.gameOptions.players.map(p => ({
             name: p.name,
           }));
-          const game = new GameController(playersForGame, room.gameOptions.maxRounds);
+          const game = new GameController(playersForGame, room.gameOptions.maxRounds, roomID);
 
           room.game = game;
 
@@ -125,6 +125,33 @@ io.on('connection', (socket) => {
           gameController.letterClick(letter);
           break;
 
+        // Dodaj nowe przypadki tutaj
+        case 'addPoints':
+          const { letterCount } = payload;
+          gameController.addPoints(letterCount);
+          break;
+
+        case 'nextPlayer':
+          gameController.nextPlayer();
+          break;
+
+        case 'resetPoints':
+          gameController.resetPoints();
+          break;
+
+        case 'resetHalf':
+          gameController.resetHalf();
+          break;
+
+        case 'letMeGuess':
+          gameController.letMeGuess();
+          break;
+
+        case 'resetStake':
+          gameController.resetStake();
+          break;
+
+        // Dodaj inne akcje gry w razie potrzeby
         default:
           callback({ success: false, message: `Unknown event name: ${name}` });
           return;

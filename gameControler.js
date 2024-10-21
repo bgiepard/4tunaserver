@@ -1,7 +1,7 @@
 const { initialPhrases, vowels, values } = require('./utils/constants');
 
 class GameController {
-    constructor(players, maxRounds) {
+    constructor(players, maxRounds, id) {
         // Initialize phrases, vowels, and values
         this.initialPhrases = [...initialPhrases];
         this.vowels = [...vowels];
@@ -12,6 +12,7 @@ class GameController {
 
         // Initialize game information with provided players
         this.gameInfo = {
+            gameID: id,
             stake: 0,
             players: players.map(p => ({
                 name: p.name,

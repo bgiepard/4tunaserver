@@ -12,8 +12,8 @@ const io = new Server(server, {
   }
 });
 
-server.listen(process.env.PORT || 3000, () => {
-  console.log('Server listening on port 3000');
+server.listen(process.env.PORT || 5000, () => {
+  console.log('Server listening on port 5000');
 });
 
 function generateRoomID() {
@@ -35,7 +35,8 @@ io.on('connection', (socket) => {
       gameOptions: {
         ...options,
         players: []
-      }
+      },
+      game: null
     };
     callback({ roomID });
   });
@@ -50,17 +51,19 @@ io.on('connection', (socket) => {
         room.gameOptions.players.push({
           id: socket.id,
           name: name,
-          amount: 0,
-          total: 0
         });
-        io.to(roomID).emit('playerJoined', room);
+        io.to(roomID).emit('playerJoined', room.gameOptions.players);
 
-        if(room.gameOptions.players.length == room.gameOptions.maxPlayers) {
-          //on game start
-          room.gameOptions.phrase = getRandomPhrase();
-          room.gameOptions.mode = 'rotating';
+        if(room.gameOptions.players.length === room.gameOptions.maxPlayers) {
+          const playersForGame = room.gameOptions.players.map(p => ({
+            name: p.name,
+          }));
+          const game = new GameController(playersForGame, room.gameOptions.maxRounds);
 
-          io.to(roomID).emit('startGame', { id: roomID });
+          room.game = game;
+
+          // Emit 'startGame' with initial game data
+          io.to(roomID).emit('startGame', {gameID: roomID});
         }
 
         callback({ success: true });
@@ -82,7 +85,7 @@ io.on('connection', (socket) => {
 
         if (playerIndex !== -1) {
           room.gameOptions.players.splice(playerIndex, 1);
-          io.to(roomID).emit('playerDisconnect', room);
+          io.to(roomID).emit('playerDisconnect', room.gameOptions.players);
 
           if (room.gameOptions.players.length === 0) {
             delete rooms[roomID];
@@ -92,56 +95,50 @@ io.on('connection', (socket) => {
     }
   });
 
-
   // get initial game details
   socket.on('getGameData', (gameID, callback) => {
     const game = rooms[gameID];
 
     if (game) {
-        callback({ success: true, game });
+        const gameData = rooms[gameID].game;
+        callback({ success: true, gameData });
       } else {
         callback({ success: false, message: 'GAME does not exist.' });
       }
   });
 
-
-  socket.on('newGameEvent', ({gameID, name}, callback) => {
+  socket.on('newGameEvent', ({ gameID, name, payload }, callback) => {
     const room = rooms[gameID];
 
-    console.log('newGameEvent room', room)
-    console.log('newGameEvent gameId', gameID)
-    console.log('newGameEvent data', name)
+    if (room && room.game) {
+      const gameController = room.game;
 
-    if (room) {
-      io.to(gameID).emit('gameUpdate', 'pokaze ten komunikat');
+      switch (name) {
+        case 'rotate':
+          gameController.rotateWheel();
+          const selectedValue = gameController.determineSelectedValue(gameController.gameInfo.rotate);
+          gameController.processSelectedValue(selectedValue);
+          break;
 
-      //
-      // if (room.gameOptions.players.length < room.gameOptions.maxPlayers) {
-      //   // socket.join(roomID);
-      //   // socket.currentRoom = roomID;
-      //   // room.gameOptions.players.push({
-      //   //   id: socket.id,
-      //   //   name: name,
-      //   //   amount: 0,
-      //   //   total: 0
-      //   // });
-      //   io.to(roomID).emit('playerJoined', room);
-      //
-      //   if(room.gameOptions.players.length == room.gameOptions.maxPlayers) {
-      //     //on game start
-      //     room.gameOptions.phrase = getRandomPhrase();
-      //     room.gameOptions.mode = 'rotating';
-      //
-      //     io.to(roomID).emit('startGame', { id: roomID });
-      //   }
-      //
-      //   callback({ success: true });
-      // } else {
-      //   callback({ success: false, message: 'Room is full.' });
-      // }
+        case 'letterClick':
+          const { letter } = payload;
+          gameController.letterClick(letter);
+          break;
+
+        default:
+          callback({ success: false, message: `Unknown event name: ${name}` });
+          return;
+      }
+
+      // Emit the updated game state to all players in the room
+      io.to(gameID).emit('gameUpdate', gameController.getGameState());
+
+      // Optionally return the updated game state as a response to the event
+      callback({ success: true, gameData: gameController.getGameState() });
     } else {
-      callback({ success: false, message: 'Room does not exist.' });
+      callback({ success: false, message: 'Room or Game does not exist.' });
     }
   });
+
 
 });

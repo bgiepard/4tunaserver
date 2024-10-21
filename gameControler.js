@@ -1,27 +1,23 @@
+const { initialPhrases, vowels, values } = require('./utils/constants');
 
 class GameController {
-    constructor() {
-        // Initialize phrases and vowels
-        this.initialPhrases = [
-            'Z małej chmury duży deszcz',
-            'Co nagle to po diable',
-            'Lepszy wróbel w garści',
-            'Kto pyta nie błądzi',
-            'Czas leczy rany',
-            'Bez pracy nie ma kołaczy',
-            'Prawda w oczy kole',
-            'Kto pod kim dołki kopie',
-        ];
-
-        this.vowels = ['A', 'E', 'I', 'O', 'U', 'Y', 'Ą', 'Ę', 'Ó'];
+    constructor(players, maxRounds) {
+        // Initialize phrases, vowels, and values
+        this.initialPhrases = [...initialPhrases];
+        this.vowels = [...vowels];
+        this.values = [...values];
 
         // Copy initial phrases to the phrases array
         this.phrases = [...this.initialPhrases];
 
-        // Initialize game information
+        // Initialize game information with provided players
         this.gameInfo = {
             stake: 0,
-            players: [], // Players will be added when they join the game
+            players: players.map(p => ({
+                name: p.name,
+                amount: 0,
+                total: 0
+            })),
             round: 1,
             maxRounds: 3,
             currentPlayer: 0,
@@ -35,11 +31,15 @@ class GameController {
             rotating: false,
             goodGuess: true,
             onlyVowels: false,
+            afterRotate: false, // Mirrors the React context
         };
     }
 
     // Method to get a random phrase
     getRandomPhrase() {
+        if (this.phrases.length === 0) {
+            this.phrases = [...this.initialPhrases];
+        }
         const randomIndex = Math.floor(Math.random() * this.phrases.length);
         return this.phrases[randomIndex];
     }
@@ -81,6 +81,53 @@ class GameController {
         this.gameInfo.mode = 'guessing';
     }
 
+    // Method to reset the stake
+    resetStake() {
+        this.gameInfo.stake = 0;
+    }
+
+    // Method to determine the selected value based on rotation angle
+    determineSelectedValue(rotationAngle) {
+        let adjustedAngle = ((rotationAngle % 360) + 360) % 360;
+        const sliceAngle = 360 / this.values.length;
+        const arrowAngle = 0;
+        let angleAtArrow = (adjustedAngle + arrowAngle) % 360;
+        const sliceIndex = Math.floor(angleAtArrow / sliceAngle) % this.values.length;
+        return this.values[sliceIndex];
+    }
+
+    // Method to process the selected value after rotation
+    processSelectedValue(selectedValue) {
+        if (selectedValue === '-100%') {
+            this.resetPoints();
+        } else if (selectedValue === '-50%') {
+            this.resetHalf();
+        } else if (selectedValue === 'STOP') {
+            this.nextPlayer();
+        } else {
+            this.gameInfo.stake = selectedValue;
+            this.gameInfo.mode = 'letter';
+            this.gameInfo.goodGuess = false;
+            this.gameInfo.afterRotate = true; // If needed
+        }
+    }
+
+    // Method to handle rotation logic
+    handleRotate(deg = 0, rotationAngle, setRotationAngle, isAnimating, setIsAnimating, setTransitionDuration) {
+        if (isAnimating) return;
+
+        const randomDeg = Math.floor(deg);
+        const newRotationAngle = rotationAngle + randomDeg;
+        const totalDegrees = newRotationAngle - rotationAngle;
+        const rotations = totalDegrees / 360;
+        const newTransitionDuration = rotations * 1000;
+
+        setTransitionDuration(newTransitionDuration);
+        setRotationAngle(newRotationAngle);
+        setIsAnimating(true);
+        this.resetStake();
+    }
+
     // Method to handle letter clicks
     letterClick(letter) {
         const upperLetter = letter.toUpperCase();
@@ -107,12 +154,15 @@ class GameController {
                         }
                     });
 
+                    // Remove used phrase
                     this.phrases = this.phrases.filter((phrase) => phrase !== this.gameInfo.phrase);
 
+                    // If no phrases left, reset to initial phrases
                     if (this.phrases.length === 0) {
                         this.phrases = [...this.initialPhrases];
                     }
 
+                    // Select a new phrase
                     const newPhrase = this.getRandomPhrase();
 
                     this.gameInfo = {
@@ -128,6 +178,7 @@ class GameController {
                         currentPlayer: (currentPlayerIndex + 1) % this.gameInfo.players.length,
                         mode: 'rotating',
                         rotate: 0,
+                        afterRotate: false, // Reset if needed
                     };
                 }
             } else {
@@ -160,8 +211,15 @@ class GameController {
             if (!isCorrectLetter) {
                 this.nextPlayer();
                 this.gameInfo.mode = 'rotating';
+            } else {
+                this.gameInfo.mode = 'rotating'; // Assuming mode switches back to rotating after a correct guess
             }
         }
+    }
+
+    // Method to get game current state
+    getGameState() {
+        return this.gameInfo;
     }
 }
 

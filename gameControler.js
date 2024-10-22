@@ -7,6 +7,7 @@ class GameController {
         this.values = [...values];
 
         this.phrases = [...this.initialPhrases];
+        this.usedPhrases = [];
 
         // Initialize game information with provided players
         this.gameInfo = {
@@ -38,12 +39,18 @@ class GameController {
     // Method to get a random phrase
     getRandomPhrase() {
         if (this.phrases.length === 0) {
-            this.phrases = [...this.initialPhrases];
+            throw new Error('No more unique phrases available.');
         }
-        const randomIndex = Math.floor(Math.random() * this.phrases.length);
-        return this.phrases[randomIndex];
-    }
 
+        const randomIndex = Math.floor(Math.random() * this.phrases.length);
+        const selectedPhrase = this.phrases[randomIndex];
+
+        // Move the selected phrase to usedPhrases
+        this.usedPhrases.push(selectedPhrase);
+        this.phrases.splice(randomIndex, 1); // Remove from available phrases
+
+        return selectedPhrase;
+    }
     // Method to add points to the current player
     addPoints(letterCount) {
         const currentPlayer = this.gameInfo.players[this.gameInfo.currentPlayer];

@@ -30,7 +30,13 @@ app.get("/", (req, res) => {
 
 // Funkcja do generowania unikalnych ID pokoi
 function generateRoomID() {
-  return Math.random().toString(36).substr(2, 6).toUpperCase();
+  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let roomID = '';
+  for (let i = 0; i < 3; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    roomID += characters.charAt(randomIndex);
+  }
+  return roomID;
 }
 
 const rooms = {};

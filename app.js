@@ -24,6 +24,7 @@ const rooms = {};
 
 io.on("connection", (socket) => {
   socket.on("createRoom", (options, callback) => {
+    console.log("siema");
     const roomID = generateRoomID();
     socket.join(roomID);
     socket.currentRoom = roomID;

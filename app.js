@@ -25,6 +25,8 @@ function generateRoomID() {
 const rooms = {};
 
 io.on("connection", (socket) => {
+  console.log(`Użytkownik połączony: ${socket.id}`);
+
   socket.on("createRoom", (options, callback) => {
     console.log("siema");
     const roomID = generateRoomID();

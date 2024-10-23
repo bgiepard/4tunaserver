@@ -42,15 +42,19 @@ class GameController {
             throw new Error('No more unique phrases available.');
         }
 
+        // Wybierz losowy indeks
         const randomIndex = Math.floor(Math.random() * this.phrases.length);
-        const selectedPhrase = this.phrases[randomIndex];
+        const selectedPhraseObj = this.phrases[randomIndex];
 
-        // Move the selected phrase to usedPhrases
-        this.usedPhrases.push(selectedPhrase);
-        this.phrases.splice(randomIndex, 1); // Remove from available phrases
+        // Przenieś wybraną frazę do usedPhrases
+        this.usedPhrases.push(selectedPhraseObj);
+        this.phrases.splice(randomIndex, 1); // Usuń z dostępnych fraz
 
-        return selectedPhrase;
+        // Zwróć tylko phrase i category
+        const { phrase, category } = selectedPhraseObj;
+        return { phrase, category };
     }
+
     // Method to add points to the current player
     addPoints(letterCount) {
         const currentPlayer = this.gameInfo.players[this.gameInfo.currentPlayer];

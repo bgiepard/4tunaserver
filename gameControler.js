@@ -9,6 +9,9 @@ class GameController {
         this.phrases = [...this.initialPhrases];
         this.usedPhrases = [];
 
+        // Pobierz losową frazę i jej kategorię
+        const { phrase, category } = this.getRandomPhrase();
+
         // Initialize game information with provided players
         this.gameInfo = {
             gameID: id,
@@ -23,8 +26,8 @@ class GameController {
             currentPlayer: 0,
             badLetters: [],
             goodLetters: [],
-            phrase: this.getRandomPhrase(),
-            category: 'Przysłowia',
+            phrase: phrase, // Ustaw frazę jako string
+            category: category, // Ustaw kategorię
             currentLetter: '',
             rotate: 0,
             mode: 'rotating', // Modes: guessing, rotating, onlyVowels, letter
@@ -50,9 +53,8 @@ class GameController {
         this.usedPhrases.push(selectedPhraseObj);
         this.phrases.splice(randomIndex, 1); // Usuń z dostępnych fraz
 
-        // Zwróć tylko phrase i category
-        const { phrase, category } = selectedPhraseObj;
-        return { phrase, category };
+        // Zwróć cały obiekt frazy
+        return { phrase: selectedPhraseObj.phrase, category: selectedPhraseObj.category };
     }
 
     // Method to add points to the current player
@@ -103,7 +105,6 @@ class GameController {
         const sliceIndex = Math.floor(angleAtArrow / sliceAngle) % this.values.length;
         return this.values[sliceIndex];
     }
-
 
     // Method to process the selected value after rotation
     processSelectedValue(selectedValue) {
@@ -156,16 +157,17 @@ class GameController {
                         }
                     });
 
-                    // Remove used phrase
-                    this.phrases = this.phrases.filter((phrase) => phrase !== this.gameInfo.phrase);
+                    // Usuń używaną frazę na podstawie właściwości `phrase`
+                    this.usedPhrases = this.usedPhrases.filter(p => p.phrase !== this.gameInfo.phrase);
 
-                    // If no phrases left, reset to initial phrases
+                    // Jeśli nie ma fraz dostępnych, zresetuj do initialPhrases
                     if (this.phrases.length === 0) {
                         this.phrases = [...this.initialPhrases];
+                        this.usedPhrases = [];
                     }
 
-                    // Select a new phrase
-                    const newPhrase = this.getRandomPhrase();
+                    // Wybierz nową frazę
+                    const { phrase, category } = this.getRandomPhrase();
 
                     this.gameInfo = {
                         ...this.gameInfo,
@@ -173,8 +175,8 @@ class GameController {
                         goodLetters: [],
                         badLetters: [],
                         currentLetter: '',
-                        phrase: newPhrase,
-                        category: 'Przysłowia',
+                        phrase: phrase, // Ustaw nową frazę
+                        category: category, // Ustaw nową kategorię
                         round: this.gameInfo.round + 1,
                         onlyVowels: false,
                         currentPlayer: (currentPlayerIndex + 1) % this.gameInfo.players.length,

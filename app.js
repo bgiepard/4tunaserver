@@ -7,9 +7,11 @@ const GameController = require("./gameControler");
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "https://4tuna.pl", // Allow your frontend domain
     methods: ["GET", "POST"],
+    credentials: true, // Include this if necessary for authentication
   },
+  transports: ["websocket", "polling"], // WebSocket preferred
 });
 
 server.listen(3000, () => {

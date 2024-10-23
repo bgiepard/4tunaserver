@@ -18,6 +18,10 @@ server.listen(3000, () => {
   console.log("Server listening on port 3000");
 });
 
+app.get("/", (req, res) => {
+  res.send("Backend działa poprawnie");
+});
+
 function generateRoomID() {
   return Math.random().toString(36).substr(2, 6).toUpperCase();
 }

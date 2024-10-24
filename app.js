@@ -27,10 +27,13 @@ app.get("/", (req, res) => {
 function generateRoomID() {
   const characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let roomID = "";
-  for (let i = 0; i < 3; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    roomID += characters.charAt(randomIndex);
-  }
+  do {
+    roomID = "";
+    for (let i = 0; i < 3; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      roomID += characters.charAt(randomIndex);
+    }
+  } while (rooms.hasOwnProperty(roomID));
   return roomID;
 }
 
@@ -52,19 +55,14 @@ io.on("connection", (socket) => {
         },
         game: null,
       };
-      console.log(`Room created: ${roomID} by ${socket.id}`);
       callback({ roomID });
     } catch (error) {
-      console.error("Error creating room:", error);
       callback({ success: false, message: "Error creating room." });
     }
   });
 
   // Obsługa zdarzenia "joinRoom"
   socket.on("joinRoom", ({ roomID, name }, callback) => {
-    console.log(
-      `joinRoom event received from: ${socket.id} for room: ${roomID}`,
-    );
     const room = rooms[roomID];
 
     if (room) {
@@ -76,7 +74,6 @@ io.on("connection", (socket) => {
           name: name,
         });
         io.to(roomID).emit("playerJoined", room.gameOptions.players);
-        console.log(`Player ${name} joined room ${roomID}`);
 
         if (room.gameOptions.players.length === room.gameOptions.maxPlayers) {
           const playersForGame = room.gameOptions.players.map((p) => ({
@@ -88,21 +85,17 @@ io.on("connection", (socket) => {
               room.gameOptions.rounds,
               roomID,
             );
-            console.log(`GameController initialized for room ${roomID}`);
             io.to(roomID).emit("startGame", { gameID: roomID });
           } catch (error) {
-            console.error("Error initializing GameController:", error);
             callback({ success: false, message: "Error starting game." });
           }
         }
 
         callback({ success: true });
       } else {
-        console.log(`Room ${roomID} is full.`);
         callback({ success: false, message: "Room is full." });
       }
     } else {
-      console.log(`Room ${roomID} does not exist.`);
       callback({ success: false, message: "Room does not exist." });
     }
   });

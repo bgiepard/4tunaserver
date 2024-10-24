@@ -5,33 +5,28 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const GameController = require("./gameControler");
 
-// Middleware do parsowania JSON, jeśli potrzebujesz
 app.use(express.json());
 
-// Inicjalizacja Socket.io z elastycznymi ustawieniami CORS dla testów
 const io = new Server(server, {
   cors: {
-    origin: "*", // Dla testów, zezwalamy na wszystkie źródła. Zmień na "https://4tuna.pl" w produkcji.
+    origin: "https://4tuna.pl",
     methods: ["GET", "POST"],
     credentials: true,
   },
-  transports: ["websocket", "polling"], // Preferowanie WebSocketów
+  transports: ["websocket", "polling"],
 });
 
-// Uruchomienie serwera na porcie 3000
 server.listen(3000, () => {
   console.log("Server listening on port 3000");
 });
 
-// Testowy endpoint
 app.get("/", (req, res) => {
   res.send("Backend działa poprawnie");
 });
 
-// Funkcja do generowania unikalnych ID pokoi
 function generateRoomID() {
-  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let roomID = '';
+  const characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let roomID = "";
   for (let i = 0; i < 3; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     roomID += characters.charAt(randomIndex);
@@ -41,13 +36,9 @@ function generateRoomID() {
 
 const rooms = {};
 
-// Obsługa połączeń Socket.io
 io.on("connection", (socket) => {
-  console.log(`Użytkownik połączony: ${socket.id}`);
-
   // Obsługa zdarzenia "createRoom"
   socket.on("createRoom", (options, callback) => {
-    console.log(`createRoom event received from: ${socket.id}`);
     try {
       const roomID = generateRoomID();
       socket.join(roomID);

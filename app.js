@@ -7,6 +7,12 @@ const GameController = require("./gameControler");
 
 app.use(express.json());
 
+// const io = new Server(server, {
+//   cors: {
+//     origin: "*",
+//     methods: ["GET", "POST"],
+//   },
+// });
 const io = new Server(server, {
   cors: {
     origin: "https://4tuna.pl",
@@ -16,7 +22,7 @@ const io = new Server(server, {
   transports: ["websocket", "polling"],
 });
 
-server.listen(3000, () => {
+server.listen(5000, () => {
   console.log("Server listening on port 3000");
 });
 
@@ -40,7 +46,6 @@ function generateRoomID() {
 const rooms = {};
 
 io.on("connection", (socket) => {
-  // Obsługa zdarzenia "createRoom"
   socket.on("createRoom", (options, callback) => {
     try {
       const roomID = generateRoomID();
@@ -61,7 +66,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Obsługa zdarzenia "joinRoom"
   socket.on("joinRoom", ({ roomID, name }, callback) => {
     const room = rooms[roomID];
 
@@ -73,19 +77,16 @@ io.on("connection", (socket) => {
           id: socket.id,
           name: name,
         });
-        io.to(roomID).emit("playerJoined", room.gameOptions.players);
+        io.to(roomID).emit("playerJoined", room.gameOptions);
 
         if (room.gameOptions.players.length === room.gameOptions.maxPlayers) {
-          const playersForGame = room.gameOptions.players.map((p) => ({
-            name: p.name,
-          }));
           try {
             room.game = new GameController(
-              playersForGame,
+              room.gameOptions.players,
               room.gameOptions.rounds,
               roomID,
             );
-            io.to(roomID).emit("startGame", { gameID: roomID });
+            io.to(roomID).emit("gameStarting", { gameID: roomID });
           } catch (error) {
             callback({ success: false, message: "Error starting game." });
           }
@@ -102,7 +103,6 @@ io.on("connection", (socket) => {
 
   // Obsługa zdarzenia "disconnect"
   socket.on("disconnect", () => {
-    console.log(`Użytkownik rozłączony: ${socket.id}`);
     if (socket.currentRoom) {
       const roomID = socket.currentRoom;
       const room = rooms[roomID];
@@ -118,11 +118,9 @@ io.on("connection", (socket) => {
             1,
           )[0];
           io.to(roomID).emit("playerDisconnect", room.gameOptions.players);
-          console.log(`Player ${removedPlayer.name} left room ${roomID}`);
 
           if (room.gameOptions.players.length === 0) {
             delete rooms[roomID];
-            console.log(`Room ${roomID} deleted because it became empty.`);
           }
         }
       }

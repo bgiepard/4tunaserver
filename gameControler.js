@@ -9,8 +9,8 @@ class GameController {
     this.phrases = [...this.initialPhrases];
     this.usedPhrases = [];
 
-    // Pobierz losową frazę i jej kategorię
     const { phrase, category } = this.getRandomPhrase();
+    const randomPlayerIndex = Math.floor(Math.random() * players.length);
 
     // Initialize game information with provided players
     this.gameInfo = {
@@ -21,10 +21,11 @@ class GameController {
         name: p.name,
         amount: 0,
         total: 0,
+        connected: p.connected !== undefined ? p.connected : true,
       })),
       round: 1,
       maxRounds: maxRounds || 3, // Use provided maxRounds or default to 3
-      currentPlayer: 0,
+      currentPlayer: randomPlayerIndex,
       badLetters: [],
       goodLetters: [],
       phrase: phrase, // Ustaw frazę jako string
@@ -37,6 +38,7 @@ class GameController {
       onlyVowels: false,
       afterRotate: false, // Mirrors the React context
       totalRotate: 0,
+      vowels: this.vowels,
     };
   }
 
@@ -63,15 +65,34 @@ class GameController {
 
   // Method to add points to the current player
   addPoints(letterCount) {
-    const currentPlayer = this.gameInfo.players[this.gameInfo.currentPlayer];
-    currentPlayer.amount += this.gameInfo.stake * letterCount;
+    if (this.gameInfo.currentPlayer >= 0) {
+      const currentPlayer = this.gameInfo.players[this.gameInfo.currentPlayer];
+      currentPlayer.amount += this.gameInfo.stake * letterCount;
+    }
   }
 
   // Method to move to the next player
+  // In GameController.js
   nextPlayer() {
     this.gameInfo.mode = "rotating";
-    this.gameInfo.currentPlayer =
-      (this.gameInfo.currentPlayer + 1) % this.gameInfo.players.length;
+    const totalPlayers = this.gameInfo.players.length;
+    let attempts = 0;
+    let foundConnectedPlayer = false;
+
+    do {
+      this.gameInfo.currentPlayer =
+        (this.gameInfo.currentPlayer + 1) % totalPlayers;
+      attempts++;
+      if (this.gameInfo.players[this.gameInfo.currentPlayer].connected) {
+        foundConnectedPlayer = true;
+        break;
+      }
+    } while (attempts < totalPlayers);
+
+    if (!foundConnectedPlayer) {
+      this.gameInfo.mode = "gameover";
+      this.gameInfo.currentPlayer = -1; // Invalid index to indicate no current player
+    }
   }
 
   // Method to reset points for the current player
@@ -158,6 +179,8 @@ class GameController {
 
         if (guessedAllLetters) {
           const currentPlayerIndex = this.gameInfo.currentPlayer;
+          if (currentPlayerIndex < 0) return;
+
           this.gameInfo.players = this.gameInfo.players.map((player, index) => {
             if (index === currentPlayerIndex) {
               return {
@@ -199,6 +222,7 @@ class GameController {
             mode: "rotating",
             rotate: 0,
             afterRotate: false, // Reset if needed
+            totalRotate: 0,
           };
         }
       } else {

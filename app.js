@@ -7,27 +7,27 @@ const GameController = require("./gameControler");
 
 app.use(express.json());
 
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//   },
-// });
 const io = new Server(server, {
   cors: {
-    origin: "https://4tuna.pl",
+    origin: "*",
     methods: ["GET", "POST"],
-    credentials: true,
   },
-  transports: ["websocket", "polling"],
 });
+// const io = new Server(server, {
+//   cors: {
+//     origin: "https://4tuna.pl",
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+//   transports: ["websocket", "polling"],
+// });
 
 server.listen(5000, () => {
-  console.log("Server listening on port 3000");
+  console.log("Server listening on port 5000");
 });
 
 app.get("/", (req, res) => {
-  res.send("Backend działa poprawnie");
+  res.send("Backend is running correctly");
 });
 
 function generateRoomID() {
@@ -45,6 +45,94 @@ function generateRoomID() {
 
 const rooms = {};
 
+// Helper function to find a public room that isn't full
+function findAvailableRooms() {
+  const availableRooms = [];
+
+  for (let roomID in rooms) {
+    const room = rooms[roomID];
+    if (
+      room.public &&
+      room.gameOptions.players.length < room.gameOptions.maxPlayers &&
+      room.gameOptions.players.length > 0
+    ) {
+      availableRooms.push({
+        roomID: roomID,
+        players: room.gameOptions.players.length,
+        maxPlayers: room.gameOptions.maxPlayers,
+        maxRounds: room.maxRounds,
+      });
+    }
+
+    // Stop once we have 5 rooms
+    if (availableRooms.length === 5) {
+      break;
+    }
+  }
+
+  return availableRooms;
+}
+
+// Helper function to add a player to a room
+function addPlayerToRoom(socket, roomID, name) {
+  const room = rooms[roomID];
+  if (room) {
+    socket.join(roomID);
+    socket.currentRoom = roomID;
+    room.gameOptions.players.push({
+      id: socket.id,
+      name: name,
+      connected: true,
+    });
+    io.to(roomID).emit("playerJoined", room.gameOptions);
+    return true;
+  }
+  return false;
+}
+
+// Helper function to handle player disconnection
+function handlePlayerDisconnect(socket) {
+  const roomID = socket.currentRoom;
+  const room = rooms[roomID];
+
+  if (room) {
+    const player = room.gameOptions.players.find(
+      (player) => player.id === socket.id,
+    );
+
+    if (player) {
+      player.connected = false;
+    }
+
+    if (room.game && room.game.gameInfo && room.game.gameInfo.players) {
+      const playerInGame = room.game.gameInfo.players.find(
+        (player) => player.id === socket.id,
+      );
+      if (playerInGame) {
+        playerInGame.connected = false;
+      }
+
+      // Check if the disconnected player is the current player
+      const currentPlayerIndex = room.game.gameInfo.currentPlayer;
+      if (currentPlayerIndex >= 0) {
+        const currentPlayer = room.game.gameInfo.players[currentPlayerIndex];
+        if (currentPlayer.id === socket.id) {
+          room.game.nextPlayer();
+          const gameState = room.game.getGameState();
+          io.to(roomID).emit("gameUpdate", gameState);
+        }
+      }
+    }
+
+    io.to(roomID).emit("playerDisconnect", room.gameOptions.players);
+
+    // Remove room if no players are connected
+    if (room.gameOptions.players.every((p) => !p.connected)) {
+      delete rooms[roomID];
+    }
+  }
+}
+
 io.on("connection", (socket) => {
   socket.on("createRoom", (options, callback) => {
     try {
@@ -58,6 +146,8 @@ io.on("connection", (socket) => {
           ...options,
           players: [],
         },
+        maxRounds: options.rounds,
+        public: options.public,
         game: null,
       };
       callback({ roomID });
@@ -71,16 +161,11 @@ io.on("connection", (socket) => {
 
     if (room) {
       if (room.gameOptions.players.length < room.gameOptions.maxPlayers) {
-        socket.join(roomID);
-        socket.currentRoom = roomID;
-        room.gameOptions.players.push({
-          id: socket.id,
-          name: name,
-        });
-        io.to(roomID).emit("playerJoined", room.gameOptions);
+        addPlayerToRoom(socket, roomID, name);
 
         if (room.gameOptions.players.length === room.gameOptions.maxPlayers) {
           try {
+            room.public = false;
             room.game = new GameController(
               room.gameOptions.players,
               room.gameOptions.rounds,
@@ -101,54 +186,38 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Obsługa zdarzenia "disconnect"
-  socket.on("disconnect", () => {
-    if (socket.currentRoom) {
-      const roomID = socket.currentRoom;
-      const room = rooms[roomID];
+  socket.on("findRoom", (options, callback) => {
+    try {
+      const foundRooms = findAvailableRooms();
 
-      if (room) {
-        const playerIndex = room.gameOptions.players.findIndex(
-          (player) => player.id === socket.id,
-        );
-
-        if (playerIndex !== -1) {
-          const removedPlayer = room.gameOptions.players.splice(
-            playerIndex,
-            1,
-          )[0];
-          io.to(roomID).emit("playerDisconnect", room.gameOptions.players);
-
-          if (room.gameOptions.players.length === 0) {
-            delete rooms[roomID];
-          }
-        }
+      if (foundRooms?.length > 0) {
+        callback({ success: true, rooms: foundRooms });
+      } else {
+        callback({ success: false, message: "No available rooms." });
       }
+    } catch (error) {
+      callback({ success: false, message: "Error finding room." });
     }
   });
 
-  // Obsługa zdarzenia "getGameData"
+  socket.on("disconnect", () => {
+    if (socket.currentRoom) {
+      handlePlayerDisconnect(socket);
+    }
+  });
+
   socket.on("getGameData", (gameID, callback) => {
-    console.log(
-      `getGameData event received from: ${socket.id} for game: ${gameID}`,
-    );
     const game = rooms[gameID];
 
     if (game && game.game) {
       const gameData = game.game.getGameState();
       callback({ success: true, gameData });
-      console.log(`Game data sent for game ${gameID}`);
     } else {
-      console.log(`Game ${gameID} does not exist.`);
-      callback({ success: false, message: "GAME does not exist." });
+      callback({ success: false, message: "Game does not exist." });
     }
   });
 
-  // Obsługa zdarzenia "newGameEvent"
   socket.on("newGameEvent", ({ gameID, name, payload }, callback) => {
-    console.log(
-      `newGameEvent: ${name} received from: ${socket.id} for game: ${gameID}`,
-    );
     const room = rooms[gameID];
 
     if (room && room.game) {
@@ -159,39 +228,28 @@ io.on("connection", (socket) => {
           case "rotate":
             gameController.rotateWheel();
             break;
-
           case "letterClick":
-            const { letter } = payload;
-            gameController.letterClick(letter);
+            gameController.letterClick(payload.letter);
             break;
-
           case "addPoints":
-            const { letterCount } = payload;
-            gameController.addPoints(letterCount);
+            gameController.addPoints(payload.letterCount);
             break;
-
           case "nextPlayer":
             gameController.nextPlayer();
             break;
-
           case "resetPoints":
             gameController.resetPoints();
             break;
-
           case "resetHalf":
             gameController.resetHalf();
             break;
-
           case "letMeGuess":
             gameController.letMeGuess();
             break;
-
           case "resetStake":
             gameController.resetStake();
             break;
-
           default:
-            console.log(`Unknown event name: ${name}`);
             callback({
               success: false,
               message: `Unknown event name: ${name}`,
@@ -199,10 +257,8 @@ io.on("connection", (socket) => {
             return;
         }
 
-        // Emit the updated game state to all players in the room
         const gameState = gameController.getGameState();
         io.to(gameID).emit("gameUpdate", gameState);
-        console.log(`Game state updated for game ${gameID}:`, gameState);
 
         if (name === "rotate") {
           setTimeout(() => {
@@ -212,12 +268,11 @@ io.on("connection", (socket) => {
             io.to(gameID).emit("gameUpdate", updatedGameState);
             console.log(
               `Game state updated after rotate for game ${gameID}:`,
-              updatedGameState,
+              updatedGameState.stake,
             );
           }, 2000);
         }
 
-        // Optionally return the updated game state as a response to the event
         callback({ success: true, gameData: gameController.getGameState() });
       } catch (error) {
         console.error(

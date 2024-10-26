@@ -134,6 +134,7 @@ function handlePlayerDisconnect(socket) {
 }
 
 io.on("connection", (socket) => {
+  console.log("connected");
   socket.on("createRoom", (options, callback) => {
     try {
       const roomID = generateRoomID();

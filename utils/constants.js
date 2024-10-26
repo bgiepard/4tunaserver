@@ -275,6 +275,55 @@ const initialPhrases = [
   { id: 133, category: "znane postacie", phrase: "Krzysztof Ibisz" },
   { id: 134, category: "znane postacie", phrase: "Charlie Chaplin" },
   { id: 135, category: "znane postacie", phrase: "Barack Obama" },
+
+  { id: 136, category: "tytuły książek", phrase: "Pan Tadeusz" },
+  { id: 137, category: "tytuły książek", phrase: "Zbrodnia i kara" },
+  {
+    id: 138,
+    category: "tytuły książek",
+    phrase: "Harry Potter i Kamień Filozoficzny",
+  },
+  {
+    id: 139,
+    category: "tytuły książek",
+    phrase: "Hobbit czyli tam i z powrotem",
+  },
+  { id: 140, category: "tytuły książek", phrase: "Mały Książę" },
+  { id: 141, category: "tytuły książek", phrase: "W pustyni i w puszczy" },
+  { id: 142, category: "tytuły książek", phrase: "Opowieść wigilijna" },
+  { id: 143, category: "tytuły książek", phrase: "Mistrz i Małgorzata" },
+  { id: 144, category: "tytuły książek", phrase: "Ania z Zielonego Wzgórza" },
+  { id: 145, category: "tytuły książek", phrase: "Władca Pierścieni" },
+  { id: 146, category: "tytuły książek", phrase: "Przeminęło z wiatrem" },
+
+  {
+    id: 147,
+    category: "łamańce językowe",
+    phrase: "W Szczebrzeszynie chrząszcz brzmi w trzcinie",
+  },
+  {
+    id: 148,
+    category: "łamańce językowe",
+    phrase: "Król Karol kupił królowej Karolinie korale koloru koralowego",
+  },
+  {
+    id: 149,
+    category: "łamańce językowe",
+    phrase: "Stół z powyłamywanymi nogami",
+  },
+  {
+    id: 150,
+    category: "łamańce językowe",
+    phrase: "Czarna krowa w kropki bordo gryzła trawę kręcąc mordą",
+  },
+
+  { id: 151, category: "łamańce językowe", phrase: "Szedł Sasza suchą szosą" },
+  {
+    id: 152,
+    category: "łamańce językowe",
+    phrase: "Czy tata czyta cytaty Tacyta",
+  },
+  { id: 153, category: "łamańce językowe", phrase: "I cóż że ze Szwecji" },
 ];
 const vowels = ["A", "E", "I", "O", "U", "Y", "Ą", "Ę", "Ó"];
 

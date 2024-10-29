@@ -295,11 +295,7 @@ const initialPhrases = [
   { id: 144, category: "tytuły książek", phrase: "Ania z Zielonego Wzgórza" },
   { id: 145, category: "tytuły książek", phrase: "Władca Pierścieni" },
   { id: 146, category: "tytuły książek", phrase: "Przeminęło z wiatrem" },
-  {
-    id: 147,
-    category: "łamańce językowe",
-    phrase: "W Szczebrzeszynie chrząszcz brzmi w trzcinie",
-  },
+
   {
     id: 148,
     category: "łamańce językowe",

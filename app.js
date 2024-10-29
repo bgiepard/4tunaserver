@@ -225,12 +225,14 @@ io.on("connection", (socket) => {
       const gameController = room.game;
 
       try {
+        let phraseGuessed = false;
+
         switch (name) {
           case "rotate":
             gameController.rotateWheel();
             break;
           case "letterClick":
-            gameController.letterClick(payload.letter);
+            phraseGuessed = gameController.letterClick(payload.letter);
             break;
           case "addPoints":
             gameController.addPoints(payload.letterCount);
@@ -258,6 +260,7 @@ io.on("connection", (socket) => {
             return;
         }
 
+        console.log("game update", phraseGuessed);
         const gameState = gameController.getGameState();
         io.to(gameID).emit("gameUpdate", gameState);
 

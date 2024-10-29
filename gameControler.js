@@ -39,6 +39,7 @@ class GameController {
       afterRotate: false, // Mirrors the React context
       totalRotate: 0,
       vowels: this.vowels,
+      hasRotated: false,
     };
   }
 
@@ -93,6 +94,7 @@ class GameController {
       this.gameInfo.mode = "gameover";
       this.gameInfo.currentPlayer = -1; // Invalid index to indicate no current player
     }
+    this.gameInfo.hasRotated = false;
   }
 
   // Method to reset points for the current player
@@ -115,6 +117,7 @@ class GameController {
     const incrementalRotate = Math.floor(Math.random() * (720 - 180 + 1)) + 180;
     this.gameInfo.rotate = incrementalRotate;
     this.gameInfo.totalRotate += incrementalRotate;
+    this.gameInfo.hasRotated = true;
   }
 
   // Method to reset the stake
@@ -163,6 +166,7 @@ class GameController {
   letterClick(letter) {
     const upperLetter = letter.toUpperCase();
     const upperPhrase = this.gameInfo.phrase.toUpperCase();
+    let phraseGuessed = false;
 
     if (this.gameInfo.mode === "guessing") {
       if (upperPhrase.includes(upperLetter)) {
@@ -223,7 +227,10 @@ class GameController {
             rotate: 0,
             afterRotate: false, // Reset if needed
             totalRotate: 0,
+            hasRotated: false,
           };
+
+          phraseGuessed = true;
         }
       } else {
         this.resetPoints();
@@ -271,6 +278,8 @@ class GameController {
         this.gameInfo.mode = "rotating"; // Assuming mode switches back to rotating after a correct guess
       }
     }
+
+    return phraseGuessed;
   }
 
   // Method to get game current state

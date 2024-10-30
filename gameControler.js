@@ -211,24 +211,20 @@ class GameController {
           // Wybierz nową frazę
           const { phrase, category } = this.getRandomPhrase();
 
-          this.gameInfo = {
-            ...this.gameInfo,
-            players: this.gameInfo.players,
-            goodLetters: [],
-            badLetters: [],
-            currentLetter: "",
-            phrase: phrase, // Ustaw nową frazę
-            category: category, // Ustaw nową kategorię
-            round: this.gameInfo.round + 1,
-            onlyVowels: false,
-            currentPlayer:
-              (currentPlayerIndex + 1) % this.gameInfo.players.length,
-            mode: "rotating",
-            rotate: 0,
-            afterRotate: false, // Reset if needed
-            totalRotate: 0,
-            hasRotated: false,
-          };
+          this.gameInfo.goodLetters = [];
+          this.gameInfo.badLetters = [];
+          this.gameInfo.currentLetter = "";
+          this.gameInfo.phrase = phrase; // Set new phrase
+          this.gameInfo.category = category; // Set new category
+          this.gameInfo.round += 1;
+          this.gameInfo.onlyVowels = false;
+          this.gameInfo.currentPlayer =
+            (currentPlayerIndex + 1) % this.gameInfo.players.length;
+          this.gameInfo.mode = "rotating";
+          this.gameInfo.rotate = 0;
+          this.gameInfo.afterRotate = false; // Reset if needed
+          this.gameInfo.totalRotate = 0;
+          this.gameInfo.hasRotated = false;
 
           phraseGuessed = true;
         }

@@ -368,6 +368,52 @@ const initialPhrases = [
   { id: 187, category: "polskie województwa", phrase: "Warmińsko Mazurskie" },
   { id: 188, category: "polskie województwa", phrase: "Wielkopolskie" },
   { id: 189, category: "polskie województwa", phrase: "Zachodniopomorskie" },
+
+  { id: 209, category: "nazwy dań", phrase: "krem z pomidorów" },
+  { id: 210, category: "nazwy dań", phrase: "placek po węgiersku" },
+  { id: 211, category: "nazwy dań", phrase: "łazanki z kapustą" },
+  { id: 212, category: "nazwy dań", phrase: "gofry z bitą śmietaną" },
+
+  { id: 205, category: "związki frazeologiczne", phrase: "Wylać dziecko z kąpielą" },
+  { id: 206, category: "związki frazeologiczne", phrase: "Chcieć gwiazdkę z nieba" },
+  { id: 207, category: "związki frazeologiczne", phrase: "Grać va banque" },
+  { id: 208, category: "związki frazeologiczne", phrase: "Mieć z kimś kosę" },
+
+  { id: 190, category: "przysłowia", phrase: "Nadzieja matką głupich" },
+  { id: 191, category: "przysłowia", phrase: "Jak się nie ma co się lubi to się lubi co się ma" },
+  { id: 192, category: "przysłowia", phrase: "Kto się boi, ten dwa razy traci" },
+  { id: 193, category: "przysłowia", phrase: "Gdzie drwa rąbią tam wióry lecą" },
+
+  { id: 231, category: "znane postacie", phrase: "Józef Piłsudski" },
+  { id: 232, category: "znane postacie", phrase: "Kazimierz Wielki" },
+  { id: 233, category: "znane postacie", phrase: "Tadeusz Kościuszko" },
+  { id: 235, category: "znane postacie", phrase: "Władysław Jagiełło" },
+  { id: 236, category: "znane postacie", phrase: "Adam Mickiewicz" },
+  { id: 237, category: "znane postacie", phrase: "Stanisław August Poniatowski" },
+  { id: 238, category: "znane postacie", phrase: "Henryk Sienkiewicz" },
+  { id: 239, category: "znane postacie", phrase: "Fryderyk Chopin" },
+  { id: 240, category: "znane postacie", phrase: "Józef Bem" },
+
+  { id: 261, category: "polskie seriale", phrase: "Czterej pancerni i pies" },
+  { id: 262, category: "polskie seriale", phrase: "Stawka większa niż życie" },
+  { id: 264, category: "polskie seriale", phrase: "Zmiennicy" },
+  { id: 265, category: "polskie seriale", phrase: "Ranczo" },
+  { id: 266, category: "polskie seriale", phrase: "Rodzinka pl" },
+  { id: 267, category: "polskie seriale", phrase: "Świat według Kiepskich" },
+  { id: 268, category: "polskie seriale", phrase: "Ojciec Mateusz" },
+  { id: 269, category: "polskie seriale", phrase: "Klan" },
+  { id: 270, category: "polskie seriale", phrase: "Na dobre i na złe" },
+
+  { id: 271, category: "polskie teleturnieje", phrase: "Milionerzy" },
+  { id: 272, category: "polskie teleturnieje", phrase: "Familiada" },
+  { id: 273, category: "polskie teleturnieje", phrase: "Koło Fortuny" },
+  { id: 274, category: "polskie teleturnieje", phrase: "Jaka to melodia?" },
+  { id: 275, category: "polskie teleturnieje", phrase: "Jeden z dziesięciu" },
+  { id: 276, category: "polskie teleturnieje", phrase: "Postaw na milion" },
+  { id: 277, category: "polskie teleturnieje", phrase: "Va banque" },
+  { id: 278, category: "polskie teleturnieje", phrase: "Twoja twarz brzmi znajomo" },
+  { id: 279, category: "polskie teleturnieje", phrase: "The Voice of Poland" },
+  { id: 280, category: "polskie teleturnieje", phrase: "Mam talent" },
 ];
 const vowels = ["A", "E", "I", "O", "U", "Y", "Ą", "Ę", "Ó"];
 

@@ -151,6 +151,21 @@ io.on("connection", (socket) => {
         public: options.public,
         game: null,
       };
+
+      if (options.solo) {
+        // Solo game logic
+        const name = options.name; // Ensure name is provided
+        addPlayerToRoom(socket, roomID, name);
+
+        rooms[roomID].public = false;
+        rooms[roomID].game = new GameController(
+          rooms[roomID].gameOptions.players,
+          rooms[roomID].gameOptions.rounds,
+          roomID,
+        );
+        io.to(roomID).emit("gameStarting", { gameID: roomID });
+      }
+
       callback({ roomID });
     } catch (error) {
       callback({ success: false, message: "Error creating room." });

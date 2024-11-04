@@ -23,6 +23,7 @@ class GameController {
         total: 0,
         connected: p.connected !== undefined ? p.connected : true,
       })),
+      solo: players.length === 1,
       round: 1,
       maxRounds: maxRounds || 3, // Use provided maxRounds or default to 3
       currentPlayer: randomPlayerIndex,
@@ -75,6 +76,13 @@ class GameController {
   // Method to move to the next player
   // In GameController.js
   nextPlayer() {
+    if (this.gameInfo.players.length === 1) {
+      // Solo play: reset necessary variables and continue
+      this.gameInfo.mode = "rotating";
+      this.gameInfo.hasRotated = false;
+      return;
+    }
+
     this.gameInfo.mode = "rotating";
     const totalPlayers = this.gameInfo.players.length;
     let attempts = 0;

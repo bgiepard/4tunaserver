@@ -407,7 +407,7 @@ const initialPhrases = [
   { id: 271, category: "polskie teleturnieje", phrase: "Milionerzy" },
   { id: 272, category: "polskie teleturnieje", phrase: "Familiada" },
   { id: 273, category: "polskie teleturnieje", phrase: "Koło Fortuny" },
-  { id: 274, category: "polskie teleturnieje", phrase: "Jaka to melodia?" },
+  { id: 274, category: "polskie teleturnieje", phrase: "Jaka to melodia" },
   { id: 275, category: "polskie teleturnieje", phrase: "Jeden z dziesięciu" },
   { id: 276, category: "polskie teleturnieje", phrase: "Postaw na milion" },
   { id: 277, category: "polskie teleturnieje", phrase: "Va banque" },

@@ -801,11 +801,6 @@ const initialPhrases = [
     category: "przedmioty codziennego użytku",
     phrase: "Płyn do płukania tkanin",
   },
-  {
-    id: 360,
-    category: "przedmioty codziennego użytku",
-    phrase: "Żarówka energooszczędna",
-  },
 ];
 
 const vowels = ["A", "E", "I", "O", "U", "Y", "Ą", "Ę", "Ó"];

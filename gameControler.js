@@ -165,6 +165,53 @@ class GameController {
     }
   }
 
+  handleRoundWin() {
+    const currentPlayerIndex = this.gameInfo.currentPlayer;
+    if (currentPlayerIndex < 0) return;
+
+    this.gameInfo.players = this.gameInfo.players.map((player, index) => {
+      if (index === currentPlayerIndex) {
+        return {
+          ...player,
+          total: player.total + player.amount,
+          amount: 0,
+        };
+      } else {
+        return { ...player, amount: 0 };
+      }
+    });
+
+    // Remove used phrase
+    this.usedPhrases = this.usedPhrases.filter(
+      (p) => p.phrase !== this.gameInfo.phrase,
+    );
+
+    // If no phrases available, reset to initialPhrases
+    if (this.phrases.length === 0) {
+      this.phrases = [...this.initialPhrases];
+      this.usedPhrases = [];
+    }
+
+    // Choose a new phrase
+    const { phrase, category } = this.getRandomPhrase();
+
+    // Reset game state
+    this.gameInfo.goodLetters = [];
+    this.gameInfo.badLetters = [];
+    this.gameInfo.currentLetter = "";
+    this.gameInfo.phrase = phrase;
+    this.gameInfo.category = category;
+    this.gameInfo.round += 1;
+    this.gameInfo.onlyVowels = false;
+    this.gameInfo.currentPlayer =
+      (currentPlayerIndex + 1) % this.gameInfo.players.length;
+    this.gameInfo.mode = "rotating";
+    this.gameInfo.rotate = 0;
+    this.gameInfo.afterRotate = false;
+    this.gameInfo.totalRotate = 0;
+    this.gameInfo.hasRotated = false;
+  }
+
   // Method to set the game mode to guessing
   letMeGuess() {
     this.gameInfo.mode = "guessing";
@@ -190,50 +237,7 @@ class GameController {
         );
 
         if (guessedAllLetters) {
-          const currentPlayerIndex = this.gameInfo.currentPlayer;
-          if (currentPlayerIndex < 0) return;
-
-          this.gameInfo.players = this.gameInfo.players.map((player, index) => {
-            if (index === currentPlayerIndex) {
-              return {
-                ...player,
-                total: player.total + player.amount,
-                amount: 0,
-              };
-            } else {
-              return { ...player, amount: 0 };
-            }
-          });
-
-          // Usuń używaną frazę na podstawie właściwości `phrase`
-          this.usedPhrases = this.usedPhrases.filter(
-            (p) => p.phrase !== this.gameInfo.phrase,
-          );
-
-          // Jeśli nie ma fraz dostępnych, zresetuj do initialPhrases
-          if (this.phrases.length === 0) {
-            this.phrases = [...this.initialPhrases];
-            this.usedPhrases = [];
-          }
-
-          // Wybierz nową frazę
-          const { phrase, category } = this.getRandomPhrase();
-
-          this.gameInfo.goodLetters = [];
-          this.gameInfo.badLetters = [];
-          this.gameInfo.currentLetter = "";
-          this.gameInfo.phrase = phrase; // Set new phrase
-          this.gameInfo.category = category; // Set new category
-          this.gameInfo.round += 1;
-          this.gameInfo.onlyVowels = false;
-          this.gameInfo.currentPlayer =
-            (currentPlayerIndex + 1) % this.gameInfo.players.length;
-          this.gameInfo.mode = "rotating";
-          this.gameInfo.rotate = 0;
-          this.gameInfo.afterRotate = false; // Reset if needed
-          this.gameInfo.totalRotate = 0;
-          this.gameInfo.hasRotated = false;
-
+          this.handleRoundWin();
           phraseGuessed = true;
         }
       } else {
@@ -251,35 +255,43 @@ class GameController {
         this.gameInfo.goodLetters = [
           ...new Set([...this.gameInfo.goodLetters, upperLetter]),
         ];
+
+        // Check if all letters have been guessed
+        const allLettersInPhrase = new Set(
+          upperPhrase.replace(/\s/g, "").split(""),
+        );
+        const guessedAllLetters = [...allLettersInPhrase].every((char) =>
+          this.gameInfo.goodLetters.includes(char),
+        );
+
+        if (guessedAllLetters) {
+          this.handleRoundWin();
+          phraseGuessed = true;
+        } else {
+          // Not all letters guessed
+          const unguessedLetters = [...allLettersInPhrase].filter(
+            (char) => !this.gameInfo.goodLetters.includes(char),
+          );
+
+          const onlyVowelsLeft = unguessedLetters.every((char) =>
+            this.vowels.includes(char),
+          );
+
+          if (onlyVowelsLeft) {
+            this.gameInfo.onlyVowels = true;
+          }
+
+          this.gameInfo.currentLetter = upperLetter;
+          this.gameInfo.goodGuess = true;
+          this.gameInfo.mode = "rotating";
+        }
       } else {
         this.gameInfo.badLetters = [
           ...new Set([...this.gameInfo.badLetters, upperLetter]),
         ];
-      }
-
-      const allLettersInPhrase = new Set(
-        upperPhrase.replace(/\s/g, "").split(""),
-      );
-      const unguessedLetters = [...allLettersInPhrase].filter(
-        (char) => !this.gameInfo.goodLetters.includes(char),
-      );
-
-      const onlyVowelsLeft = unguessedLetters.every((char) =>
-        this.vowels.includes(char),
-      );
-
-      if (onlyVowelsLeft) {
-        this.gameInfo.onlyVowels = true;
-      }
-
-      this.gameInfo.currentLetter = upperLetter;
-      this.gameInfo.goodGuess = isCorrectLetter;
-
-      if (!isCorrectLetter) {
         this.nextPlayer();
         this.gameInfo.mode = "rotating";
-      } else {
-        this.gameInfo.mode = "rotating"; // Assuming mode switches back to rotating after a correct guess
+        this.gameInfo.goodGuess = false;
       }
     }
 

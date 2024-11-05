@@ -154,7 +154,7 @@ io.on("connection", (socket) => {
 
       if (options.solo) {
         // Solo game logic
-        const name = options.name; // Ensure name is provided
+        const name = options.name || "Przeciwnik"; // Ensure name is provided
         addPlayerToRoom(socket, roomID, name);
 
         rooms[roomID].public = false;

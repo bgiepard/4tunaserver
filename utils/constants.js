@@ -28,16 +28,16 @@ const initialPhrases = [
     phrase: "Stół z powyłamywanymi nogami",
   },
   { id: 7, category: "łamańce językowe", phrase: "Szedł Sasza suchą szosą" },
-  {
-    id: 8,
-    category: "łamańce językowe",
-    phrase: "W Szczebrzeszynie chrząszcz brzmi w trzcinie",
-  },
-  {
-    id: 9,
-    category: "łamańce językowe",
-    phrase: "Wyindywidualizowaliśmy się z rozentuzjazmowanego tłumu",
-  },
+  // {
+  //   id: 8,
+  //   category: "łamańce językowe",
+  //   phrase: "W Szczebrzeszynie chrząszcz brzmi w trzcinie",
+  // },
+  // {
+  //   id: 9,
+  //   category: "łamańce językowe",
+  //   phrase: "Wyindywidualizowaliśmy się z rozentuzjazmowanego tłumu",
+  // },
   { id: 10, category: "łamańce językowe", phrase: "Pocztmistrz z Tczewa" },
   {
     id: 11,
@@ -151,7 +151,7 @@ const initialPhrases = [
 
   // Polskie województwa
   { id: 93, category: "polskie województwa", phrase: "Dolnośląskie" },
-  { id: 94, category: "polskie województwa", phrase: "Kujawsko-Pomorskie" },
+  { id: 94, category: "polskie województwa", phrase: "Kujawsko Pomorskie" },
   { id: 95, category: "polskie województwa", phrase: "Lubelskie" },
   { id: 96, category: "polskie województwa", phrase: "Lubuskie" },
   { id: 97, category: "polskie województwa", phrase: "Łódzkie" },
@@ -163,9 +163,9 @@ const initialPhrases = [
   { id: 103, category: "polskie województwa", phrase: "Pomorskie" },
   { id: 104, category: "polskie województwa", phrase: "Śląskie" },
   { id: 105, category: "polskie województwa", phrase: "Świętokrzyskie" },
-  { id: 106, category: "polskie województwa", phrase: "Warmińsko-Mazurskie" },
+  { id: 106, category: "polskie województwa", phrase: "Warmińsko Mazurskie" },
   { id: 107, category: "polskie województwa", phrase: "Wielkopolskie" },
-  { id: 108, category: "polskie województwa", phrase: "Zachodniopomorskie" },
+  // { id: 108, category: "polskie województwa", phrase: "Zachodniopomorskie" },
 
   // Postacie z bajek
   { id: 109, category: "postacie z bajek", phrase: "Aladyn" },

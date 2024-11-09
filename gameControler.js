@@ -237,7 +237,8 @@ class GameController {
         );
 
         if (guessedAllLetters) {
-          this.handleRoundWin();
+          // this.handleRoundWin();
+          this.gameInfo.mode = "phraseRevealed";
           phraseGuessed = true;
         }
       } else {

@@ -163,7 +163,7 @@ const initialPhrases = [
   { id: 103, category: "polskie województwa", phrase: "Pomorskie" },
   { id: 104, category: "polskie województwa", phrase: "Śląskie" },
   { id: 105, category: "polskie województwa", phrase: "Świętokrzyskie" },
-  { id: 106, category: "polskie województwa", phrase: "Warmińsko-Mazurskie" },
+  { id: 106, category: "polskie województwa", phrase: "Warmińsko Mazurskie" },
   { id: 107, category: "polskie województwa", phrase: "Wielkopolskie" },
   { id: 108, category: "polskie województwa", phrase: "Zachodniopomorskie" },
 

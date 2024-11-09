@@ -7,20 +7,20 @@ const GameController = require("./gameControler");
 
 app.use(express.json());
 
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//   },
-// });
 const io = new Server(server, {
   cors: {
-    origin: "https://4tuna.pl",
+    origin: "*",
     methods: ["GET", "POST"],
-    credentials: true,
   },
-  transports: ["websocket", "polling"],
 });
+// const io = new Server(server, {
+//   cors: {
+//     origin: "https://4tuna.pl",
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+//   transports: ["websocket", "polling"],
+// });
 
 server.listen(5000, () => {
   console.log("Server listening on port 5000");
@@ -289,6 +289,14 @@ io.on("connection", (socket) => {
               `Game state updated after rotate for game ${gameID}:`,
               updatedGameState.stake,
             );
+          }, 2000);
+        }
+
+        if (gameState.mode === "phraseRevealed") {
+          setTimeout(() => {
+            gameController.handleRoundWin();
+            const updatedGameState = gameController.getGameState();
+            io.to(gameID).emit("gameUpdate", updatedGameState);
           }, 2000);
         }
 

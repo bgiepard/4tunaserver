@@ -801,6 +801,118 @@ const initialPhrases = [
     category: "przedmioty codziennego użytku",
     phrase: "Płyn do płukania tkanin",
   },
+
+  { id: 410, category: "święta i uroczystości", phrase: "Boże Narodzenie" },
+  { id: 411, category: "święta i uroczystości", phrase: "Wielkanoc" },
+  { id: 412, category: "święta i uroczystości", phrase: "Nowy Rok" },
+  { id: 413, category: "święta i uroczystości", phrase: "Dzień Kobiet" },
+  { id: 414, category: "święta i uroczystości", phrase: "Dzień Matki" },
+  { id: 415, category: "święta i uroczystości", phrase: "Dzień Ojca" },
+  { id: 416, category: "święta i uroczystości", phrase: "Walentynki" },
+  { id: 417, category: "święta i uroczystości", phrase: "Dzień Dziecka" },
+  { id: 418, category: "święta i uroczystości", phrase: "Święto Niepodległości" },
+  { id: 420, category: "święta i uroczystości", phrase: "Andrzejki" },
+  { id: 421, category: "święta i uroczystości", phrase: "Sylwester" },
+  { id: 422, category: "święta i uroczystości", phrase: "Mikołajki" },
+  { id: 423, category: "święta i uroczystości", phrase: "Dzień Nauczyciela" },
+  { id: 424, category: "święta i uroczystości", phrase: "Tłusty Czwartek" },
+  { id: 425, category: "święta i uroczystości", phrase: "Dzień Babci" },
+  { id: 426, category: "święta i uroczystości", phrase: "Dzień Dziadka" },
+  { id: 427, category: "święta i uroczystości", phrase: "Śmigus Dyngus" },
+  { id: 428, category: "święta i uroczystości", phrase: "Pierwszy Dzień Wiosny" },
+  { id: 429, category: "święta i uroczystości", phrase: "Zakończenie Roku Szkolnego" },
+  { id: 430, category: "święta i uroczystości", phrase: "Wniebowzięcie Maryi" },
+  { id: 431, category: "święta i uroczystości", phrase: "Zaduszki" },
+  { id: 432, category: "święta i uroczystości", phrase: "Dzień Chłopaka" },
+  { id: 433, category: "święta i uroczystości", phrase: "Halloween" },
+  { id: 434, category: "święta i uroczystości", phrase: "Święto Pracy" },
+  { id: 435, category: "święta i uroczystości", phrase: "Trzech Króli" },
+  { id: 436, category: "święta i uroczystości", phrase: "Dzień Ziemi" },
+  { id: 445, category: "święta i uroczystości", phrase: "Dzień Taty" },
+  { id: 447, category: "święta i uroczystości", phrase: "Dzień Kobiet" },
+  { id: 448, category: "święta i uroczystości", phrase: "Dzień Dziecka" },
+  { id: 449, category: "święta i uroczystości", phrase: "Dzień Chłopaka" },
+
+  { id: 500, category: "łamańce językowe", phrase: "Szły pchły koło wody pchła pchłę pchła do wody" },
+  { id: 501, category: "łamańce językowe", phrase: "W czasie suszy szosa sucha" },
+  { id: 502, category: "łamańce językowe", phrase: "Cesarz czesze cesarzową" },
+
+  { id: 503, category: "nazwy dań", phrase: "Pyzy z mięsem" },
+  { id: 504, category: "nazwy dań", phrase: "Racuchy z jabłkami" },
+  { id: 505, category: "nazwy dań", phrase: "Oscypek z żurawiną" },
+
+  { id: 506, category: "nazwy geograficzne", phrase: "Puszcza Białowieska" },
+  { id: 507, category: "nazwy geograficzne", phrase: "Wielkie Jeziora Mazurskie" },
+  { id: 508, category: "nazwy geograficzne", phrase: "Bieszczady" },
+
+  { id: 509, category: "polskie seriale", phrase: "Przyjaciółki" },
+  { id: 510, category: "polskie seriale", phrase: "Wiedźmin" },
+  { id: 511, category: "polskie seriale", phrase: "Alternatywy cztery" },
+
+  { id: 512, category: "polskie teleturnieje", phrase: "Idol" },
+  { id: 513, category: "polskie teleturnieje", phrase: "Szansa na sukces" },
+  { id: 514, category: "polskie teleturnieje", phrase: "Tak to leciało" },
+
+  { id: 515, category: "polskie województwa", phrase: "Zachodniopomorskie" },
+
+  { id: 516, category: "postacie z bajek", phrase: "Koziołek Matołek" },
+  { id: 517, category: "postacie z bajek", phrase: "Miś Uszatek" },
+  { id: 518, category: "postacie z bajek", phrase: "Reksio" },
+
+  { id: 519, category: "przysłowia", phrase: "Baba z wozu koniom lżej" },
+  { id: 520, category: "przysłowia", phrase: "Dla chcącego nic trudnego" },
+  { id: 521, category: "przysłowia", phrase: "Nie ma róży bez kolców" },
+
+  { id: 522, category: "tytuły filmów", phrase: "Avengers" },
+  { id: 523, category: "tytuły filmów", phrase: "Czas Apokalipsy" },
+  { id: 524, category: "tytuły filmów", phrase: "Django" },
+
+  { id: 525, category: "tytuły książek", phrase: "Kamienie na szaniec" },
+  { id: 526, category: "tytuły książek", phrase: "Ludzie bezdomni" },
+  { id: 527, category: "tytuły książek", phrase: "Opowieści z Narnii" },
+
+  { id: 528, category: "związki frazeologiczne", phrase: "Nie kiwnąć palcem" },
+  { id: 529, category: "związki frazeologiczne", phrase: "Jak grom z jasnego nieba" },
+  { id: 530, category: "związki frazeologiczne", phrase: "Chodzić spać z kurami" },
+
+  { id: 531, category: "znane postacie", phrase: "Juliusz Słowacki" },
+  { id: 532, category: "znane postacie", phrase: "Galileusz" },
+  { id: 533, category: "znane postacie", phrase: "Jan Paweł Drugi" },
+
+  { id: 534, category: "idiomy i wyrażenia potoczne", phrase: "Siedzieć na walizkach" },
+  { id: 535, category: "idiomy i wyrażenia potoczne", phrase: "Wpuścić kogoś w maliny" },
+  { id: 536, category: "idiomy i wyrażenia potoczne", phrase: "Robić kogoś w konia" },
+
+  { id: 537, category: "wydarzenia historyczne", phrase: "Unia Lubelska" },
+  { id: 538, category: "wydarzenia historyczne", phrase: "Bitwa pod Wiedniem" },
+  { id: 539, category: "wydarzenia historyczne", phrase: "Reformacja" },
+
+  { id: 540, category: "przedmioty codziennego użytku", phrase: "Kuchenka mikrofalowa" },
+  { id: 541, category: "przedmioty codziennego użytku", phrase: "Szczotka do włosów" },
+  { id: 542, category: "przedmioty codziennego użytku", phrase: "Parasol przeciwdeszczowy" },
+
+  { id: 543, category: "święta i uroczystości", phrase: "Dzień Wszystkich Świętych" },
+  { id: 544, category: "święta i uroczystości", phrase: "Boże Ciało" },
+  { id: 545, category: "święta i uroczystości", phrase: "Dzień Zakochanych" },
+
+  { id: 564, category: "przedmioty codziennego użytku", phrase: "Szczotka do zamiatania" },
+  { id: 565, category: "przedmioty codziennego użytku", phrase: "Ściereczka z mikrofibry" },
+  { id: 566, category: "przedmioty codziennego użytku", phrase: "Żelazko parowe" },
+
+  { id: 567, category: "postacie z bajek", phrase: "Kaczor Donald" },
+  { id: 568, category: "postacie z bajek", phrase: "Goofy" },
+  { id: 569, category: "postacie z bajek", phrase: "Pluto" },
+
+  { id: 546, category: "związki frazeologiczne", phrase: "Złapać byka za rogi" },
+  { id: 547, category: "związki frazeologiczne", phrase: "Wyssać coś z palca" },
+  { id: 548, category: "związki frazeologiczne", phrase: "Mieć wilczy apetyt" },
+
+  { id: 549, category: "tytuły filmów", phrase: "Lot nad kukułczym gniazdem" },
+  { id: 551, category: "tytuły filmów", phrase: "Podziemny krąg" },
+
+  { id: 552, category: "tytuły książek", phrase: "Bracia Karamazow" },
+  { id: 553, category: "tytuły książek", phrase: "Sto lat samotności" },
+  { id: 554, category: "tytuły książek", phrase: "Pachnidło" },
 ];
 
 const vowels = ["A", "E", "I", "O", "U", "Y", "Ą", "Ę", "Ó"];

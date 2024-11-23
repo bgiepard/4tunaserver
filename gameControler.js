@@ -5,6 +5,7 @@ class GameController {
     this.initialPhrases = [...initialPhrases];
     this.vowels = [...vowels];
     this.values = [...values];
+    this.lastCategory = null;
 
     this.phrases = [...this.initialPhrases];
     this.usedPhrases = [];
@@ -50,15 +51,36 @@ class GameController {
       throw new Error("No more unique phrases available.");
     }
 
-    // Wybierz losowy indeks
-    const randomIndex = Math.floor(Math.random() * this.phrases.length);
-    const selectedPhraseObj = this.phrases[randomIndex];
+    // Filter out phrases from the last used category
+    let availablePhrases = this.phrases;
+    if (this.lastCategory !== null) {
+      availablePhrases = this.phrases.filter(
+          (phraseObj) => phraseObj.category !== this.lastCategory
+      );
 
-    // Przenieś wybraną frazę do usedPhrases
+      // If no phrases are left after filtering, reset the lastCategory
+      if (availablePhrases.length === 0) {
+        availablePhrases = this.phrases;
+      }
+    }
+
+    // Select a random phrase from the available phrases
+    const randomIndex = Math.floor(Math.random() * availablePhrases.length);
+    const selectedPhraseObj = availablePhrases[randomIndex];
+
+    // Remove the selected phrase from the main phrases list
+    const indexInOriginalArray = this.phrases.findIndex(
+        (phraseObj) => phraseObj.id === selectedPhraseObj.id
+    );
+    this.phrases.splice(indexInOriginalArray, 1);
+
+    // Add the selected phrase to usedPhrases
     this.usedPhrases.push(selectedPhraseObj);
-    this.phrases.splice(randomIndex, 1); // Usuń z dostępnych fraz
 
-    // Zwróć cały obiekt frazy
+    // Update the last used category
+    this.lastCategory = selectedPhraseObj.category;
+
+    // Return the phrase and category
     return {
       phrase: selectedPhraseObj.phrase,
       category: selectedPhraseObj.category,
@@ -190,6 +212,7 @@ class GameController {
     if (this.phrases.length === 0) {
       this.phrases = [...this.initialPhrases];
       this.usedPhrases = [];
+      this.lastCategory = null;
     }
 
     // Choose a new phrase
